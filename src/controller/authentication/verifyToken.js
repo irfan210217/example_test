@@ -6,7 +6,7 @@ export const verifyToken = async (req, res, next) => {
    let refreshToken = req.headers['access-authorization']
     
    try {
-        if (!accessToken && !refreshToken) return re.sendStatus(400);
+        if (!accessToken && !refreshToken) return res.sendStatus(403);
       
         const checkToken = await User.findOne({
            where: {
