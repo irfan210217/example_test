@@ -21,7 +21,7 @@ const newToken = () => {
 
     token.createRefreshToken = (config) => {
         let id = new Date().getMilliseconds()
-        let exp = new Date(Date.now() + 1 * 60 * 60 * 1000).getTime();
+        let exp = new Date(Date.now() + 7 * 60 * 60 * 1000).getTime();
 
         const tokenConfig = {
             code: id + 341,
@@ -36,22 +36,25 @@ const newToken = () => {
     return token;
 };
 
-export const BWT = {
-    createToken(tokenConfig) {
-        const Token = newToken();
-        const accessToken = Token.createAccessToken(tokenConfig);
-        const refreshToken = Token.createRefreshToken();
 
-        return { accessToken, refreshToken };
-    },
-    verifyToken(token) {
-        const date = new Date().getTime();
-        const decode = JSON.parse(base64.decode(token));
+export const BWT = {};
 
-        if (date > decode.exp) return false
-        return true
-    },
-    destroyToken() {
-
-    }
-}
+BWT.createToken = (config) => {
+  const Token = newToken();
+  
+  const result = {
+    accessToken : Token.createAccessToken(config),
+    refreshToken : Token.createRefreshToken(config)
+  };
+  
+  return result;
+};
+   
+BWT.verifyToken = (token) => {
+  const date = new Date().getTime();
+  const decode = JSON.parse(base64.decode(token));
+  
+  if (date > decode.exp) return false
+  
+  return true;
+};

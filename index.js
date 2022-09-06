@@ -3,8 +3,8 @@ import cors from "cors";
 import product from "./src/routes/productRoute.js";
 import karyawan from "./src/routes/karyawanRoute.js";
 import login from "./src/routes/authRoute.js";
-import register from "./src/routes/register.js"
-import getData from "./src/routes/getUser.js"
+import register from "./src/routes/register.js";
+import getData from "./src/routes/getUser.js";
 
 // ####################################################
 const app = express();
@@ -23,7 +23,7 @@ app.use(getData);
 // #####################################################
 app.use('/', (req, res, next) => {
   res.sendStatus(404);
-  next()
+  next();
 });
 
 // ####################################################

@@ -17,34 +17,47 @@ export const Auth = async (req, res) => {
 
         if (user === null) return res.json({
             status: false,
-            message: "Anda belum terdaftar"
+            message: "Akun belum terdaftar"
         });
+        
+        if (user.role === 0) return res.json({
+          status : false,
+          message : "Akun Terblokir"
+        })
 
-        if (password !== user.password) return res.json({
-            status: false,
-            message: "Password anda salah"
-        });
+        if (password !== user.password) {
+          const role = user.role - 1
+          
+          await User.update({ role : role },{
+            where : {
+              username: username 
+            }
+          });
+          
+          return res.json({
+            status : false,
+            message: "Password salah"
+          })
+        }
 
         const Token = BWT.createToken({ userID: user.username, admin: user.admin })
 
-        await User.update({ token: Token.refreshToken }, {
-            where: {
+        await User.update({ token: Token.refreshToken, role: 3 }, {
+            where: { 
                 username: username
             }
-        })
+        });
 
         res.cookie('token', Token.refreshToken, {
             httpOnly : true
-        })
+        });
 
         res.json({
             status: true,
             message: "Success",
-            token: {
-                accessToken: Token.accessToken,
-                refreshToken: Token.refreshToken
-            }
-        })
+            token: Token
+        });
+        
     } catch (error) {
         console.log(error);
     }
